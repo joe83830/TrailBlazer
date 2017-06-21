@@ -84,45 +84,42 @@ Vector<Vertex*> depthFirstSearch(BasicGraph& graph, Vertex* start, Vertex* end) 
 Vector<Vertex*> breadthFirstSearch(BasicGraph& graph, Vertex* start, Vertex* end) {
 
     graph.resetData();
-    Queue<Vertex*> toBeProcessed;
+    Queue<Vertex*> toBeProcessed;    
     toBeProcessed.enqueue(start);
+    start->setColor(YELLOW);
 
     Vertex* theVeryEnd;
 
     while (true) {
+
         Vertex* firstInQ = toBeProcessed.dequeue();
+        firstInQ->setColor(GREEN);
+        firstInQ->visited = true;
         Set<Vertex*> neighbors = graph.getNeighbors(firstInQ);
 
-        int numOfNeighbors = neighbors.size();
-
-        for (int i = 0; i < numOfNeighbors; i++) {
-            Vertex* firstInSet = neighbors.first();
+        for (Vertex* firstInSet : neighbors) {
 
             if (firstInSet == end) {
                 firstInSet->previous = firstInQ;
                 theVeryEnd = firstInSet;
-
                 goto out;
-                //break;    // Do I still need this here?
 
             } else if (firstInSet->visited == false){
 
                 firstInSet->previous = firstInQ;
                 firstInSet->visited = true;
                 toBeProcessed.enqueue(firstInSet);
+                firstInSet->setColor(YELLOW);
             }
-            neighbors.remove(firstInSet);
         }
         //        neighbors.mapAll([firstInQ](Vertex* x){x->previous = firstInQ;});
     }
 out:
 
     int count = 0;
-
     for (Vertex* cur1 = theVeryEnd; cur1 != NULL; cur1 = cur1->previous) {
         count += 1;
     }
-    cout << "Count = " << count << endl;
     Vector<Vertex*> path(count);
     Vertex* cur = theVeryEnd;
 
@@ -130,7 +127,6 @@ out:
         path.set(count - i - 1, cur);
         cur = cur->previous;
     }
-
     return path;
 }
 
