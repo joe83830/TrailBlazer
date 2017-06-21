@@ -50,37 +50,6 @@ Vector<Vertex*> depthFirstSearch(BasicGraph& graph, Vertex* start, Vertex* end) 
     return path;
 }
 
-//void depthFirstSearchHelper(Vector<Vertex*>& path, const BasicGraph& graph, Vertex* start, Vertex* end, bool& pathFound) {
-//    start->visited = true;
-//    start->setColor(GREEN);
-//    path.add(start);
-
-//    if (start == end) {
-//        pathFound = true;
-//        return;
-//    }
-
-//    for (Vertex* vert : graph.getNeighbors(start)) {
-//        if (!vert->visited) {
-//            depthFirstSearchHelper(path, graph, vert, end, pathFound);
-//            if (pathFound) {
-//                return;
-//            } else {
-//                path.remove(path.size()-1);
-//                vert->setColor(GRAY);
-//            }
-//        }
-//    }
-//}
-
-//Vector<Vertex*> depthFirstSearch(BasicGraph& graph, Vertex* start, Vertex* end) {
-//    graph.resetData();
-//    Vector<Vertex*> path;
-//    bool pathFound = false;
-//    depthFirstSearchHelper(path, graph, start, end, pathFound);
-//    return path;
-//}
-
 Vector<Vertex*> breadthFirstSearch(BasicGraph& graph, Vertex* start, Vertex* end) {
 
     graph.resetData();
