@@ -160,11 +160,62 @@ Vector<Vertex*> dijkstrasAlgorithm(BasicGraph& graph, Vertex* start, Vertex* end
 }
 
 Vector<Vertex*> aStar(BasicGraph& graph, Vertex* start, Vertex* end) {
-    // TODO: implement this function; remove these comments
-    //       (The function body code provided below is just a stub that returns
-    //        an empty vector so that the overall project will compile.
-    //        You should remove that code and replace it with your implementation.)
-    Vector<Vertex*> path;
+
+    graph.resetData();
+    PriorityQueue<Vertex*> toBeRanked;
+
+    start->cost = 0;
+    toBeRanked.enqueue(start, start->cost);
+    start->setColor(YELLOW);
+    Vertex* theVeryEnd;
+
+    while(toBeRanked.size() != 0) {
+
+        Vertex* firstInQ = toBeRanked.dequeue();
+        firstInQ->setColor(GREEN);
+        firstInQ->visited = true;
+
+        if (firstInQ == end) {
+            theVeryEnd = firstInQ;
+            break;
+
+        } else {
+            Set<Vertex*> neighbors = graph.getNeighbors(firstInQ);
+
+            for (Vertex* firstInSet : neighbors) {
+                double altKosten = firstInSet->cost;
+                Edge* bridge = graph.getEdge(firstInQ, firstInSet);
+                double heurKosten = heuristicFunction(firstInSet, end);
+                double neuKosten = firstInQ->cost + bridge->cost + heurKosten;
+
+                if (firstInSet->visited == false && altKosten == 0) {
+                    firstInSet->cost = neuKosten;
+                    firstInSet->previous = firstInQ;
+                    firstInSet->setColor(YELLOW);
+                    toBeRanked.enqueue(firstInSet, firstInSet->cost);
+
+                } else if (firstInSet->visited == false && altKosten != 0 && neuKosten < altKosten){
+                    firstInSet->cost = neuKosten;
+                    firstInSet->previous = firstInQ;
+                    firstInSet->setColor(YELLOW);
+                    toBeRanked.changePriority(firstInSet, firstInSet->cost);
+                }
+            }
+        }
+    }
+
+    int count = 0;
+    for (Vertex* cur1 = theVeryEnd; cur1 != NULL; cur1 = cur1->previous) {
+        count += 1;
+    }
+
+    Vector<Vertex*> path(count);
+    Vertex* cur = theVeryEnd;
+
+    for (int i = 0; i < count; i++) {
+        path.set(count - i - 1, cur);
+        cur = cur->previous;
+    }
     return path;
 }
 
