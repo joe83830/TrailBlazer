@@ -8,6 +8,7 @@
 #include "vector.h"
 #include "set.h"
 #include "pqueue.h"
+#include "strlib.h"
 
 using namespace std;
 
@@ -54,7 +55,7 @@ Vector<Vertex*> depthFirstSearch(BasicGraph& graph, Vertex* start, Vertex* end) 
 Vector<Vertex*> breadthFirstSearch(BasicGraph& graph, Vertex* start, Vertex* end) {
 
     graph.resetData();
-    Queue<Vertex*> toBeProcessed;    
+    Queue<Vertex*> toBeProcessed;
     toBeProcessed.enqueue(start);
     start->setColor(YELLOW);
 
@@ -220,10 +221,65 @@ Vector<Vertex*> aStar(BasicGraph& graph, Vertex* start, Vertex* end) {
 }
 
 Set<Edge*> kruskal(BasicGraph& graph) {
-    // TODO: implement this function; remove these comments
-    //       (The function body code provided below is just a stub that returns
-    //        an empty set so that the overall project will compile.
-    //        You should remove that code and replace it with your implementation.)
+
+    graph.resetData();
+    cout << "Started" << endl;
+    Set<Vertex*> allVertexes = graph.getVertexSet();
+    Set<string> setOfClusters;
+
+    for (Vertex* curVertex : allVertexes) {
+        cout << "entered for loop" << endl;
+        string nameOfVert = curVertex->name;
+        setOfClusters.add(nameOfVert);
+    }
+    cout << "exited for loop" << endl;
+    Set<Edge*> allEdges = graph.getEdgeSet();
+    PriorityQueue<Edge*> prioritizedEdges;
+
+    for (Edge* curEdge : allEdges){
+        cout << "Setting pq" << endl;
+        prioritizedEdges.enqueue(curEdge, curEdge->cost);
+    }
+    cout << "PQ is all set" << endl;
+
     Set<Edge*> mst;
+    while (setOfClusters.size() > 1) {
+        cout << "Entered While loop" << endl;
+        cout << "size of cluster" << setOfClusters.size() << endl;
+        Edge* examinedEdge = prioritizedEdges.dequeue();
+
+        Vertex* startingVert = examinedEdge->start;
+        string nameOfStart = startingVert->name;
+
+        Vertex* endingVert = examinedEdge->end;
+        string nameOfEnd = endingVert->name;
+
+        string lookingInto;
+        string lookingInto2;
+
+        for (string curName : setOfClusters) {
+            if (stringContains(curName, nameOfStart)) {
+                lookingInto = curName;
+                break;
+            }
+        }
+
+        if (!stringContains(lookingInto, nameOfEnd)) {
+
+            for (string curName : setOfClusters) {
+                if (stringContains(curName, nameOfEnd)) {
+                    lookingInto2 = curName;
+                    break;
+                }
+            }
+            string newCluster = lookingInto + lookingInto2;
+            setOfClusters.remove(lookingInto);
+            setOfClusters.remove(lookingInto2);
+            setOfClusters.add(newCluster);
+            mst.add(examinedEdge);
+        }
+    }
+    cout << "Exited while loop" << endl;
+
     return mst;
 }
